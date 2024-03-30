@@ -1,4 +1,27 @@
-const { Category } = require('../models');
+const { Model, DataTypes } = require('sequelize');
+const sequelize = require('../config/connection');
+
+class Category extends Model {}
+
+Category.init(
+  {
+    id: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      primaryKey: true,
+      autoIncrement: true,
+    },
+    category_name: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+  },
+  {
+    sequelize,
+    modelName: 'category',
+    timestamps: false,
+  }
+);
 
 const categoryData = [
   {
@@ -18,6 +41,9 @@ const categoryData = [
   },
 ];
 
-const seedCategories = () => Category.bulkCreate(categoryData);
+const seedCategories = async () => {
+  await Category.sync({ force: true }); // This will create the table if it doesn't exist and drop it before recreating it
+  await Category.bulkCreate(categoryData);
+};
 
 module.exports = seedCategories;
